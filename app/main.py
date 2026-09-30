@@ -3,11 +3,11 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
-from app.llm.gemini_client import GeminiProvider
+from app.llm.factory import create_llm_provider
 
 load_dotenv()
 
-llm_provider = GeminiProvider()
+llm_provider = create_llm_provider()
 
 gemini_api_key = os.getenv("GEMINI_API_KEY")
 
