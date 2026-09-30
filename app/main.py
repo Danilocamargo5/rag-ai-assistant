@@ -1,5 +1,16 @@
+import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
+from app.llm.gemini_client import GeminiProvider
+
+load_dotenv()
+
+llm_provider = GeminiProvider()
+
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+
 
 app = FastAPI()
 
@@ -12,4 +23,9 @@ def health_check():
 
 @app.post("/questions")
 def ask_question(request: QuestionRequest):
-    return {"question": request.question}
+    answer = llm_provider.generate(request.question)
+
+    return {
+        "question": request.question,
+        "answer": answer
+    }
