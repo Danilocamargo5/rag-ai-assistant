@@ -1,13 +1,29 @@
-import os
-
+from app.config.settings import settings
 from app.llm.provider import LLMProvider
 from app.llm.gemini_client import GeminiProvider
+from app.llm.openai_client import OpenAIProvider
 
 
-def create_llm_provider() -> LLMProvider:
-    provider = os.getenv("LLM_PROVIDER", "gemini")
+def create_llm_providers() -> list[LLMProvider]:
+    providers = []
 
-    if provider == "gemini":
-        return GeminiProvider()
+    for provider_name in settings.LLM_PROVIDERS:
 
-    raise ValueError(f"LLM provider não suportado: {provider}")
+        if provider_name == "gemini":
+            providers.append(GeminiProvider())
+            continue
+
+        if provider_name == "openai":
+            providers.append(OpenAIProvider())
+            continue
+
+        if provider_name == "bedrock":
+            raise NotImplementedError(
+                "BedrockProvider ainda não foi implementado"
+            )
+
+        raise ValueError(
+            f"LLM provider não suportado: {provider_name}"
+        )
+
+    return providers
